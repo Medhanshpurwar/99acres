@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>99acres Seller Rating &amp; Review Fetcher</title>
+    <style>
+        :root {
+  /* Primitive Color Tokens */
+  --color-white: rgba(255, 255, 255, 1);
+  --color-black: rgba(0, 0, 0, 1);
+  --color-cream-50: rgba(252, 252, 249, 1);
+  --color-cream-100: rgba(255, 255, 253, 1);
+  --color-gray-200: rgba(245, 245, 245, 1);
+  --color-gray-300: rgba(167, 169, 169, 1);
+  --color-gray-400: rgba(119, 124, 124, 1);
+  --color-slate-500: rgba(98, 108, 113, 1);
+  --color-brown-600: rgba(94, 82, 64, 1);
+  --color-charcoal-700: rgba(31, 33, 33, 1);
+  --color-charcoal-800: rgba(38, 40, 40, 1);
+  --color-slate-900: rgba(19, 52, 59, 1);
+  --color-teal-300: rgba(50, 184, 198, 1);
+  --color-teal-400: rgba(45, 166, 178, 1);
+  --color-teal-500: rgba(33, 128, 141, 1);
+  --color-teal-600: rgba(29, 116, 128, 1);
+  --color-teal-700: rgba(26, 104, 115, 1);
+  --color-teal-800: rgba(41, 150, 161, 1);
+  --color-red-400: rgba(255, 84, 89, 1);
+  --color-red-500: rgba(192, 21, 47, 1);
+  --color-orange-400: rgba(230, 129, 97, 1);
+  --color-orange-500: rgba(168, 75, 47, 1);
+
+  /* RGB versions for opacity control */
+  --color-brown-600-rgb: 94, 82, 64;
+  --color-teal-500-rgb: 33, 128, 141;
+  --color-slate-900-rgb: 19, 52, 59;
+  --color-slate-500-rgb: 98, 108, 113;
+  --color-red-500-rgb: 192, 21, 47;
+  --color-red-400-rgb: 255, 84, 89;
+  --color-orange-500-rgb: 168, 75, 47;
+  --color-orange-400-rgb: 230, 129, 97;
+
+  /* Background color tokens (Light Mode) */
+  --color-bg-1: rgba(59, 130, 246, 0.08);
+  --color-bg-2: rgba(245, 158, 11, 0.08);
+  --color-bg-3: rgba(34, 197, 94, 0.08);
+  --color-bg-4: rgba(239, 68, 68, 0.08);
+  --color-bg-5: rgba(147, 51, 234, 0.08);
+  --color-bg-6: rgba(249, 115, 22, 0.08);
+  --color-bg-7: rgba(236, 72, 153, 0.08);
+  --color-bg-8: rgba(6, 182, 212, 0.08);
+
+  /* Semantic Color Tokens (Light Mode) */
+  --color-background: var(--color-cream-50);
+  --color-surface: var(--color-cream-100);
+  --color-text: var(--color-slate-900);
+  --color-text-secondary: var(--color-slate-500);
+  --color-primary: var(--color-teal-500);
+  --color-primary-hover: var(--color-teal-600);
+  --color-primary-active: var(--color-teal-700);
+  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+  --color-btn-primary-text: var(--color-cream-50);
+  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  --color-error: var(--color-red-500);
+  --color-success: var(--color-teal-500);
+  --color-warning: var(--color-orange-500);
+  --color-info: var(--color-slate-500);
+  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+  /* Typography */
+  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 30px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 550;
+  --font-weight-bold: 600;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --letter-spacing-tight: -0.01em;
+
+  /* Spacing */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-base: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
+    0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04),
+    0 4px 6px -2px rgba(0, 0, 0, 0.02);
+
+  /* Animation */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-gray-400-rgb: 119, 124, 124;
+    --color-teal-300-rgb: 50, 184, 198;
+    --color-gray-300-rgb: 167, 169, 169;
+    --color-gray-200-rgb: 245, 245, 245;
+
+    --color-bg-1: rgba(29, 78, 216, 0.15);
+    --color-bg-2: rgba(180, 83, 9, 0.15);
+    --color-bg-3: rgba(21, 128, 61, 0.15);
+    --color-bg-4: rgba(185, 28, 28, 0.15);
+    --color-bg-5: rgba(107, 33, 168, 0.15);
+    --color-bg-6: rgba(194, 65, 12, 0.15);
+    --color-bg-7: rgba(190, 24, 93, 0.15);
+    --color-bg-8: rgba(8, 145, 178, 0.15);
+
+    --color-background: var(--color-charcoal-700);
+    --color-surface: var(--color-charcoal-800);
+    --color-text: var(--color-gray-200);
+    --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+    --color-primary: var(--color-teal-300);
+    --color-primary-hover: var(--color-teal-400);
+    --color-primary-active: var(--color-teal-800);
+    --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+    --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+    --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+    --color-error: var(--color-red-400);
+    --color-success: var(--color-teal-300);
+    --color-warning: var(--color-orange-400);
+    --color-info: var(--color-gray-300);
+    --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+    --color-btn-primary-text: var(--color-slate-900);
+    --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+    --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+  }
+}
+
+@font-face {
+  font-family: 'FKGroteskNeue';
+  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
+    format('woff2');
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+.header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-card-border);
+  padding: var(--space-24) var(--space-16);
+  text-align: center;
+}
+
+.header h1 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-8);
+  color: var(--color-text);
+}
+
+.header p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--space-32) var(--space-16);
+}
+
+.search-section {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  margin-bottom: var(--space-32);
+}
+
+.search-label {
+  display: block;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-12);
+  color: var(--color-text);
+}
+
+.search-input-group {
+  display: flex;
+  gap: var(--space-12);
+  margin-bottom: var(--space-16);
+}
+
+.search-input {
+  flex: 1;
+  padding: var(--space-12) var(--space-16);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.btn {
+  padding: var(--space-12) var(--space-24);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  border: none;
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-standard);
+  font-family: var(--font-family-base);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-btn-primary-text);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-hover);
+}
+
+.demo-buttons {
+  display: flex;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+}
+
+.demo-buttons .btn-secondary {
+  font-size: var(--font-size-sm);
+  padding: var(--space-8) var(--space-16);
+}
+
+.results-section {
+  display: none;
+}
+
+.results-section.active {
+  display: block;
+}
+
+.seller-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  margin-bottom: var(--space-24);
+  box-shadow: var(--shadow-sm);
+}
+
+.seller-header {
+  margin-bottom: var(--space-20);
+  padding-bottom: var(--space-16);
+  border-bottom: 1px solid var(--color-card-border-inner);
+}
+
+.seller-name {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.business-name {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-12);
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  margin-bottom: var(--space-16);
+}
+
+.rating-number {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.rating-stars {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.star {
+  color: #FDB022;
+  font-size: var(--font-size-xl);
+}
+
+.star.empty {
+  color: var(--color-border);
+}
+
+.review-count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.contact-btn {
+  width: 100%;
+  padding: var(--space-12);
+  margin-top: var(--space-16);
+}
+
+.reviews-section {
+  margin-top: var(--space-20);
+}
+
+.reviews-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-16);
+  color: var(--color-text);
+}
+
+.review-card {
+  background-color: var(--color-bg-1);
+  border: 1px solid var(--color-card-border-inner);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  margin-bottom: var(--space-12);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-12);
+}
+
+.reviewer-info h4 {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.review-date {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.review-stars {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.review-stars .star {
+  font-size: var(--font-size-sm);
+}
+
+.review-text {
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.disclaimer {
+  background-color: var(--color-bg-2);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  margin-top: var(--space-32);
+}
+
+.disclaimer h3 {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-8);
+  color: var(--color-text);
+}
+
+.disclaimer ul {
+  margin-left: var(--space-20);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.disclaimer li {
+  margin-bottom: var(--space-4);
+}
+
+.no-results {
+  text-align: center;
+  padding: var(--space-48);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+}
+
+.no-results h3 {
+  font-size: var(--font-size-xl);
+  color: var(--color-text);
+  margin-bottom: var(--space-8);
+}
+
+.no-results p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+@media (max-width: 768px) {
+  .search-input-group {
+    flex-direction: column;
+  }
+  
+  .header h1 {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .seller-card {
+    padding: var(--space-16);
+  }
+  
+  .rating-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+    </style>
+</head>
+<body>
+    <header class="header">
+<h1>99acres Seller Rating &amp; Review Fetcher</h1>
+        <p>Production-ready prototype with real seller data. Search, sort, and filter to find trusted property sellers. All data sourced from Google Business profiles.</p>
+    </header>
+
+    <div class="container">
+        <div class="search-section">
+            <label class="search-label">Search for a Seller</label>
+            <div class="search-input-group">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Enter seller name..."
+                />
+                <button class="btn btn-primary" onclick="searchSeller()">Search</button>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
+                <label style="font-size: 13px;">Sort by:</label>
+                <select id="sortSelect" class="search-input" style="width: 160px; min-width: 140px;" onchange="onSortChange()">
+                    <option value="rating">Rating (high to low)</option>
+                    <option value="reviews">Review Count (high to low)</option>
+                    <option value="newest">Newest Review</option>
+                </select>
+                <label style="font-size: 13px; margin-left: 8px;">Min Rating:</label>
+                <select id="minRatingSelect" class="search-input" style="width: 90px; min-width: 80px;" onchange="onFilterChange()">
+                    <option value="0">All</option>
+                    <option value="3">3.0</option>
+                    <option value="4">4.0</option>
+                    <option value="4.5">4.5</option>
+                    <option value="5">5.0</option>
+                </select>
+                <button class="btn btn-secondary" onclick="downloadData()" style="font-size: 13px;">⬇️ Export CSV</button>
+            </div>
+            <div class="demo-buttons">
+                <strong style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-right: var(--space-8);">Try Demo:</strong>
+                <button class="btn btn-secondary" onclick="loadDemoSeller('PropTiger')">PropTiger</button>
+                <button class="btn btn-secondary" onclick="loadDemoSeller('Valuepersqft')">Valuepersqft</button>
+                <button class="btn btn-secondary" onclick="loadDemoSeller('NIVASHAN')">NIVASHAN</button>
+                <button class="btn btn-secondary" onclick="loadAllSellers()">Show All Sellers</button>
+            </div>
+        </div>
+
+        <div id="resultsSection" class="results-section"></div>
+
+        <footer style="text-align: center; padding: var(--space-32) var(--space-16); color: var(--color-text-secondary); font-size: var(--font-size-sm); border-top: 1px solid var(--color-card-border); margin-top: var(--space-48);">
+            <p>&copy; 2025 99acres Seller Rating &amp; Review Fetcher. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Real seller data from provided CSV
+        const sellersData = [
+            {
+                id: 1,
+                seller_name: "PropTiger",
+                google_business_name: "Proptiger Marketing Services Pvt. Ltd",
+                google_rating: "4.2/5",
+                total_review_count: 341,
+                matched_by: "Name",
+                search_url: "https://www.google.com/search?q=proptiger+realty+pvt+ltd",
+                reviews: [
+                  {
+                    text: "Relocating to Bangalore for work was daunting. PropTiger's extensive listings and virtual tours helped me find a suitable apartment quickly. Their team ensured all paperwork was handled efficiently.",
+                    date: "2025-05-28",
+                    stars: 5
+                  },
+                  {
+                    text: "Finding safe and affordable accommodation as a student was tough. PropTiger's listings provided detailed information, helping me secure a comfortable PG near my university.",
+                    date: "2025-05-20",
+                    stars: 5
+                  },
+                  {
+                    text: "Expanding my business required a new office space. PropTiger's commercial property listings offered diverse options. I found a perfect space in Chennai that met all my requirements.",
+                    date: "2025-04-28",
+                    stars: 5
+                  },
+                ]
+            },
+            {
+                id: 2,
+                seller_name: "100 Yards",
+                google_business_name: "Hundred Yards Realtor Pvt. Ltd.",
+                google_rating: "4.6/5",
+                total_review_count: 30,
+                matched_by: "Address",
+                search_url: "https://www.google.com/search?q=100+Yards+Realtors",
+                reviews: [
+                  {
+                    text: "We bought a flat in Devanahalli through 100 yards channel partner. Agent helped finalizing the property but promised 1% return which wasn't honored. Not recommended if expecting referrals or refund.",
+                    date: "2025-10-20",
+                    stars: 2
+                  },
+                  {
+                    text: "I was completely impressed with their professionalism and customer service.",
+                    date: "2025-09-25",
+                    stars: 5
+                  },
+                  {
+                    text: "The best company in real estate I have come across",
+                    date: "2025-09-27",
+                    stars: 5
+                  },
+                ]
+            },
+            {
+                id: 3,
+                seller_name: "Property Matrimony",
+                google_business_name: "Property Matrimony",
+                google_rating: "1.0/5",
+                total_review_count: 2,
+                matched_by: "Address",
+                search_url: "https://www.google.com/search?q=Property+Matrimony",
+                reviews: [
+                  {
+                    text: "One of the biggest liars of Noida. Promises 1% brokerage sharing but never delivers after booking. Only sweet talks. Never ever book from them. Biggest liars.",
+                    date: "2025-11-07",
+                    stars: 1
+                  },
+                  {
+                    text: "I was promised 50% of progress amount but nothing was delivered after 6 months. Nobody picks the phone. Worst company in the market. Just remember, broker is a broker. Don't fall for false promises.",
+                    date: "2025-11-27",
+                    stars: 1
+                  }
+                ]
+            },
+            {
+                id: 4,
+                seller_name: "NIVASHAN",
+                google_business_name: "NIVASHAN INFRA PRIVATE LIMITED",
+                google_rating: "5.0/5",
+                total_review_count: 7,
+                matched_by: "Mobile No",
+                search_url: "https://www.google.com/search?q=NIVASHAN+INFRA+PRIVATE+LIMITED",
+                reviews: [
+                  {
+                    text: "Expertise in Real Estate suggesting clients in making right decisions on Dream Home buy. Investment suggestions on plots, flats & villas also farmlands.",
+                    date: "2025-09-20",
+                    stars: 5
+                  },
+                  {
+                    text: "Very professional and customer friendly approach. Their focus on customer satisfaction impressed me most. They followed up even after the sale to check if everything was smooth.",
+                    date: "2025-07-28",
+                    stars: 5
+                  },
+                  {
+                    text: "Impressed by their personalized service and honest advice. Supported me through negotiation and registration process. One of the best real estate agencies.",
+                    date: "2025-07-20",
+                    stars: 5
+                  },
+                ]
+            },
+            {
+                id: 5,
+                seller_name: "Valuepersqft",
+                google_business_name: "Valuepersqft",
+                google_rating: "4.9/5",
+                total_review_count: 604,
+                matched_by: "Address",
+                search_url: "https://www.google.com/search?q=VALUEPERSQFT+REALTY+SERVICE",
+                reviews: [
+                  {
+                    text: "Sunil was excellent in providing necessary details and very patient during conversations. He is a great sales executive who will convince customers to buy with confidence.",
+                    date: "2025-11-27",
+                    stars: 5
+                  },
+                  {
+                    text: "Thank you for your support during flat purchase. Your guidance was very helpful. Appreciated your patience, timely updates, and making the entire experience smooth and stress-free. ValuePerSqft is truly professional and trustworthy.",
+                    date: "2025-11-23",
+                    stars: 5
+                  },
+                  {
+                    text: "Exceptional professionalism throughout the journey. Deep knowledge of agents about properties is standout. Special thanks to team for patient guidance and detailed insights. CEO personally walked me through market dynamics.",
+                    date: "2025-11-21",
+                    stars: 5
+                  },
+                ]
+            },
+            {
+                id: 6,
+                seller_name: "Purestone Ventures LLP",
+                google_business_name: "Purestone Ventures LLP",
+                google_rating: "4.3/5",
+                total_review_count: 3,
+                matched_by: "Name",
+                search_url: "https://www.google.com/search?q=Purestone+Ventures+LLP",
+                reviews: [ ]
+            },
+            {
+                id: 7,
+                seller_name: "BridgeKeys",
+                google_business_name: "Bridgekeys Infratech Private Limited",
+                google_rating: "4.7/5",
+                total_review_count: 18,
+                matched_by: "Website",
+                search_url: "https://www.google.com/search?q=Bridgekeys+Infratech",
+                reviews: [
+                  {
+                    text: "They are the best real estate consultants",
+                    date: "2025-11-14",
+                    stars: 5
+                  },
+                  {
+                    text: "An elegant, enthusiastic, honest and humble team of talents to deal with if you are looking for a real-estate product",
+                    date: "2025-11-07",
+                    stars: 5
+                  },
+                  {
+                    text: "Unprofessional people. Don't deal with them.",
+                    date: "2025-09-25",
+                    stars: 1
+                  },
+                ]
+            },
+            {
+                id: 8,
+                seller_name: "LEGACYYARDS PRIVATE LIMITED",
+                google_business_name: "LEGACYYARDS PRIVATE LIMITED",
+                google_rating: "4.9/5",
+                total_review_count: 39,
+                matched_by: "Address",
+                search_url: "https://www.google.com/search?q=LEGACYYARDS",
+                reviews: [
+                  {
+                    text: "Bought flat in Devanahalli through Legacy Yards. Agent promised 1% return but never refunded after 5 months. Legacy Yards denied all referral amounts. Avoid this agent. He has stopped responding to calls.",
+                    date: "2025-10-28",
+                    stars: 1
+                  },
+                  {
+                    text: "Huge thank you to Legacy Yards team for helping me find my dream home! They really listened to what I wanted and provided perfect match listings. Made the entire process enjoyable.",
+                    date: "2025-05-26",
+                    stars: 5
+                  },
+                  {
+                    text: "Found our dream home! Big shoutout to Legacy Yards for making the process easy and stress-free. They listened to our needs and delivered spot-on listings that perfectly matched our requirements.",
+                    date: "2025-05-25",
+                    stars: 5
+                  },
+                ]
+            },
+            {
+                id: 9,
+                seller_name: "SkyVibe",
+                google_business_name: "Skyvibe Realty Private Limited",
+                google_rating: "5.0/5",
+                total_review_count: 2,
+                matched_by: "Website",
+                search_url: "https://www.google.com/search?q=skyvibe+realty",
+                reviews: [
+                  {
+                    text: "Pleasure working with Skyvibe Reality! Exceptional service and expertise exceeded expectations. Team was knowledgeable, responsive, and went above and beyond. What impressed most was transparency, professionalism, and customer satisfaction. Highly recommended!",
+                    date: "2025-01-02",
+                    stars: 5
+                  },
+                  {
+                    text: "Skyvibe Realty has established itself as reputable player offering wide range of services. Agents are knowledgeable about local trends and pricing. Strong choice for reliable professional real-estate partner.",
+                    date: "2025-01-01",
+                    stars: 5
+                  },
+                ]
+            },
+            {
+                id: 10,
+                seller_name: "Properties 21",
+                google_business_name: "Properties 21",
+                google_rating: "5.0/5",
+                total_review_count: 2,
+                matched_by: "Name",
+                search_url: "https://www.google.com/search?q=Properties+21",
+                reviews: [
+                  {
+                    text: "Positive Quality service",
+                    date: "2025-07-14",
+                    stars: 5
+                  },
+                ]
+            }
+        ];
+
+        // Convert Google rating string ('4.2/5') to float value
+function getRatingFloat(ratingStr) {
+    if (!ratingStr) return 0;
+    let parts = ratingStr.split('/');
+    return parseFloat(parts[0]) || 0;
+}
+
+function getRatingColor(rating) {
+    if (rating >= 4.5) {
+        return 'var(--color-success)'; // Green
+    } else if (rating >= 3.5) {
+        return 'var(--color-warning)'; // Yellow
+    } else {
+        return 'var(--color-error)'; // Red
+    }
+}
+
+function generateStars(rating, size = 'normal') {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let starsHtml = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                starsHtml += '<span class="star">★</span>';
+            }
+            
+            if (hasHalfStar) {
+                starsHtml += '<span class="star">★</span>';
+            }
+            
+            for (let i = 0; i < emptyStars; i++) {
+                starsHtml += '<span class="star empty">★</span>';
+            }
+            
+            return starsHtml;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function renderSeller(seller) {
+            const ratingFloat = getRatingFloat(seller.google_rating);
+            const ratingColor = getRatingColor(ratingFloat);
+            
+            const reviewsHtml = seller.reviews && seller.reviews.length > 0 
+                ? seller.reviews.map(review => `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <h4>Verified Customer</h4>
+                                <div class="review-date">${formatDate(review.date)}</div>
+                            </div>
+                            <div class="review-stars">
+                                ${generateStars(review.stars)}
+                            </div>
+                        </div>
+                        <p class="review-text">${review.text}</p>
+                    </div>
+                `).join('')
+                : '<p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">No reviews available for this seller.</p>';
+
+            return `
+                <div class="seller-card">
+                    <div class="seller-header">
+                        <h2 class="seller-name">${seller.seller_name}</h2>
+                        <div class="business-name">Google Business: ${seller.google_business_name}</div>
+                        <div class="business-name" style="margin-top: var(--space-4);">Matched By: ${seller.matched_by}</div>
+                        
+                        <div class="rating-container">
+                            <div class="rating-number" style="color: ${ratingColor};">${seller.google_rating}</div>
+                            <div>
+                                <div class="rating-stars">
+                                    ${generateStars(ratingFloat)}
+                                </div>
+                                <div class="review-count">${seller.total_review_count} reviews</div>
+                            </div>
+                        </div>
+                        
+                        <a href="${seller.search_url}" target="_blank" class="btn btn-primary contact-btn" style="text-decoration: none;">
+                            🔍 View on Google
+                        </a>
+                    </div>
+                    
+                    <div class="reviews-section">
+                        <h3 class="reviews-title">Recent Reviews</h3>
+                        ${reviewsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function searchSeller() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            const resultsSection = document.getElementById('resultsSection');
+            let results = sellersData;
+            
+            // Apply search filter
+            if (searchTerm.length > 0) {
+                results = results.filter(seller =>
+                  seller.seller_name.toLowerCase().includes(searchTerm) ||
+                  seller.google_business_name.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Apply minimum rating filter
+            const minRatingFilter = parseFloat(document.getElementById('minRatingSelect').value);
+            if (minRatingFilter > 0) {
+                results = results.filter(seller => getRatingFloat(seller.google_rating) >= minRatingFilter);
+            }
+            
+            // Apply sort
+            results = sortSellers(results);
+            
+            if (results.length > 0) {
+                // Add statistics panel
+                const avgRating = (results.reduce((sum, s) => sum + getRatingFloat(s.google_rating), 0) / results.length).toFixed(1);
+                const topRated = results.reduce((max, s) => getRatingFloat(s.google_rating) > getRatingFloat(max.google_rating) ? s : max);
+                const statsHtml = `
+                    <div style="background-color: var(--color-bg-3); border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-24); margin-bottom: var(--space-24); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-16);">
+                        <div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-4);">Total Sellers</div>
+                            <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-text);">${results.length}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-4);">Average Rating</div>
+                            <div style="font-size: var(--font-size-3xl); font-weight: var(--font-weight-bold); color: var(--color-success);">${avgRating}</div>
+                        </div>
+                        <div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-4);">Top Rated Seller</div>
+                            <div style="font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); color: var(--color-text);">${topRated.seller_name}</div>
+                        </div>
+                    </div>
+                `;
+                const resultsHtml = statsHtml + results.map(seller => renderSeller(seller)).join('');
+                resultsSection.innerHTML = resultsHtml;
+                resultsSection.classList.add('active');
+            } else {
+                resultsSection.innerHTML = `
+                    <div class="no-results">
+                        <h3>No Results Found</h3>
+                        <p>We couldn't find any sellers matching "${searchInput.value}". Try with a different seller name or adjust filters.</p>
+                    </div>
+                `;
+                resultsSection.classList.add('active');
+            }
+        }
+        
+        function onSortChange() {
+            currentSort = document.getElementById('sortSelect').value;
+            searchSeller();
+        }
+        
+        function onFilterChange() {
+            searchSeller();
+        }
+
+        function loadDemoSeller(sellerName) {
+            document.getElementById('searchInput').value = sellerName;
+            searchSeller();
+        }
+        
+        function loadAllSellers() {
+            document.getElementById('searchInput').value = '';
+            searchSeller();
+        }
+
+        // Add sort and filter controls
+        let currentSort = 'rating';
+        let minRatingFilter = 0;
+        
+        function sortSellers(sellers) {
+            const sorted = [...sellers];
+            if (currentSort === 'rating') {
+                sorted.sort((a, b) => getRatingFloat(b.google_rating) - getRatingFloat(a.google_rating));
+            } else if (currentSort === 'reviews') {
+                sorted.sort((a, b) => b.total_review_count - a.total_review_count);
+            } else if (currentSort === 'newest') {
+                sorted.sort((a, b) => {
+                    const dateA = a.reviews[0] ? new Date(a.reviews[0].date) : new Date(0);
+                    const dateB = b.reviews[0] ? new Date(b.reviews[0].date) : new Date(0);
+                    return dateB - dateA;
+                });
+            }
+            return sorted;
+        }
+        
+        function downloadData() {
+            const csvContent = generateCSV();
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'seller_ratings_reviews.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function generateCSV() {
+            let csv = 'Seller Name,Google Business Name,Rating,Review Count,Matched By,Search URL\n';
+            sellersData.forEach(seller => {
+                const row = [
+                    seller.seller_name,
+                    seller.google_business_name,
+                    seller.google_rating,
+                    seller.total_review_count,
+                    seller.matched_by,
+                    seller.search_url
+                ].map(field => `"${field}"`).join(',');
+                csv += row + '\n';
+            });
+            return csv;
+        }
+
+        // Allow Enter key to trigger search
+        document.getElementById('searchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                searchSeller();
+            }
+        });
+    </script>
+</body>
+</html>
